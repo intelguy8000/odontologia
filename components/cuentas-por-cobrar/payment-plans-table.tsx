@@ -42,6 +42,14 @@ export function PaymentPlansTable({ paymentPlans }: Props) {
     estado: "",
   });
 
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString("es-CO", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   const getStatusText = (plan: PaymentPlan) => {
     const overdueCount = plan.paymentInstallments.filter(
       (i) => i.status === "overdue"
@@ -167,14 +175,6 @@ export function PaymentPlansTable({ paymentPlans }: Props) {
         Al día
       </span>
     );
-  };
-
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString("es-CO", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
   };
 
   if (paymentPlans.length === 0) {

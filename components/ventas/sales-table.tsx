@@ -34,6 +34,17 @@ export function SalesTable({ sales }: SalesTableProps) {
     estado: "",
   });
 
+  const getPaymentMethodLabel = (method: string) => {
+    const labels: Record<string, string> = {
+      efectivo: "Efectivo",
+      tarjeta: "Tarjeta",
+      transferencia: "Transferencia",
+      nequi: "Nequi",
+      plan_pagos: "Plan de Pagos",
+    };
+    return labels[method] || method;
+  };
+
   const filteredSales = useMemo(() => {
     return sales.filter((sale) => {
       const fecha = format(new Date(sale.date), "dd MMM yyyy", { locale: es }).toLowerCase();
@@ -113,17 +124,6 @@ export function SalesTable({ sales }: SalesTableProps) {
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
     );
-  };
-
-  const getPaymentMethodLabel = (method: string) => {
-    const labels: Record<string, string> = {
-      efectivo: "Efectivo",
-      tarjeta: "Tarjeta",
-      transferencia: "Transferencia",
-      nequi: "Nequi",
-      plan_pagos: "Plan de Pagos",
-    };
-    return labels[method] || method;
   };
 
   return (
