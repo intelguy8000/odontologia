@@ -42,3 +42,63 @@ model Integration {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Patient {
+  id       String @id @default(cuid())
+  document String @unique
+  fullName String
+  phone    String
+  email    String?
+  sales    Sale[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Sale {
+  id            String   @id @default(cuid())
+  date          DateTime
+  patientId     String
+  patient       Patient  @relation(fields: [patientId], references: [id])
+  treatment     String
+  amount        Float
+  paymentMethod String
+  status        String
+  itemsUsed     SaleInventoryItem[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model SaleInventoryItem {
+  id           String        @id @default(cuid())
+  saleId       String
+  sale         Sale          @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  inventoryId  String
+  inventory    InventoryItem @relation(fields: [inventoryId], references: [id])
+  quantityUsed Int
+}
+
+model InventoryItem {
+  id           String   @id @default(cuid())
+  code         String   @unique @default(cuid())
+  name         String
+  category     String
+  currentStock Int      @default(0)
+  minStock     Int
+  unit         String
+  avgCost      Float
+  salesUsed    SaleInventoryItem[]
+  movements    InventoryMovement[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model InventoryMovement {
+  id          String        @id @default(cuid())
+  inventoryId String
+  inventory   InventoryItem @relation(fields: [inventoryId], references: [id])
+  type        String        // entrada, salida, ajuste
+  quantity    Int
+  reason      String
+  referenceId String?
+  date        DateTime      @default(now())
+}
