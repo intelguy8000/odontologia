@@ -16,14 +16,14 @@ import {
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-  { icon: ShoppingCart, label: "Ventas", href: "/dashboard/ventas" },
-  { icon: ShoppingBag, label: "Compras & Gastos", href: "/dashboard/compras" },
-  { icon: Package, label: "Inventario", href: "/dashboard/inventario" },
-  { icon: Users, label: "Clientes", href: "/dashboard/clientes" },
-  { icon: TrendingUp, label: "P&G", href: "/dashboard/pyg" },
-  { icon: Plug, label: "Integraciones", href: "/dashboard/integraciones" },
-  { icon: UserCog, label: "Usuarios", href: "/dashboard/usuarios" },
-  { icon: Settings, label: "Configuración", href: "/dashboard/configuracion" },
+  { icon: ShoppingCart, label: "Ventas", href: "/ventas" },
+  { icon: ShoppingBag, label: "Compras & Gastos", href: "/compras" },
+  { icon: Package, label: "Inventario", href: "/inventario" },
+  { icon: Users, label: "Clientes", href: "/clientes" },
+  { icon: TrendingUp, label: "P&G", href: "/pyg" },
+  { icon: Plug, label: "Integraciones", href: "/integraciones" },
+  { icon: UserCog, label: "Usuarios", href: "/usuarios" },
+  { icon: Settings, label: "Configuración", href: "/configuracion" },
 ];
 
 export function Sidebar() {
@@ -38,7 +38,7 @@ export function Sidebar() {
       <nav className="px-4 space-y-1">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href;
+          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           return (
             <Link
               key={item.href}

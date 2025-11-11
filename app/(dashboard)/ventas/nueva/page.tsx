@@ -23,11 +23,41 @@ interface InventoryItem {
   unit: string;
 }
 
+// Diccionario de tratamientos comunes con precios sugeridos
+const TRATAMIENTOS_DENTALES = [
+  { nombre: "Consulta General", precio: 50000 },
+  { nombre: "Limpieza Dental (Profilaxis)", precio: 80000 },
+  { nombre: "Resina Dental (1 superficie)", precio: 150000 },
+  { nombre: "Resina Dental (2 superficies)", precio: 200000 },
+  { nombre: "Resina Dental (3 superficies)", precio: 250000 },
+  { nombre: "Extracción Simple", precio: 120000 },
+  { nombre: "Extracción Compleja", precio: 180000 },
+  { nombre: "Extracción Quirúrgica", precio: 250000 },
+  { nombre: "Blanqueamiento Dental", precio: 450000 },
+  { nombre: "Endodoncia (Conducto)", precio: 380000 },
+  { nombre: "Corona Porcelana", precio: 650000 },
+  { nombre: "Corona Metal-Porcelana", precio: 550000 },
+  { nombre: "Ortodoncia Mensual", precio: 200000 },
+  { nombre: "Ortodoncia Instalación", precio: 800000 },
+  { nombre: "Implante Dental", precio: 1500000 },
+  { nombre: "Urgencia Odontológica", precio: 80000 },
+  { nombre: "Radiografía Periapical", precio: 25000 },
+  { nombre: "Radiografía Panorámica", precio: 60000 },
+  { nombre: "Detartraje (Limpieza Profunda)", precio: 120000 },
+  { nombre: "Sellante de Fosas", precio: 40000 },
+  { nombre: "Aplicación de Flúor", precio: 30000 },
+  { nombre: "Puente Fijo (3 piezas)", precio: 1200000 },
+  { nombre: "Prótesis Removible Parcial", precio: 800000 },
+  { nombre: "Prótesis Removible Total", precio: 1000000 },
+  { nombre: "Otros", precio: 0 },
+];
+
 export default function NuevaVentaPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
+  const [displayAmount, setDisplayAmount] = useState("");
 
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split("T")[0],
@@ -51,6 +81,36 @@ export default function NuevaVentaPage() {
       .then((data) => setInventory(data))
       .catch((err) => console.error("Error loading inventory:", err));
   }, []);
+
+  // Formatear monto con separador de miles
+  const formatCurrency = (value: string) => {
+    const numericValue = value.replace(/\D/g, "");
+    if (!numericValue) return "";
+    return new Intl.NumberFormat("es-CO").format(parseInt(numericValue));
+  };
+
+  // Handler para cambio de monto
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "");
+    setFormData({ ...formData, amount: value });
+    setDisplayAmount(formatCurrency(value));
+  };
+
+  // Handler para cambio de tratamiento
+  const handleTreatmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const treatmentName = e.target.value;
+    const treatment = TRATAMIENTOS_DENTALES.find((t) => t.nombre === treatmentName);
+
+    setFormData({
+      ...formData,
+      treatment: treatmentName,
+      amount: treatment?.precio.toString() || "",
+    });
+
+    if (treatment) {
+      setDisplayAmount(formatCurrency(treatment.precio.toString()));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,30 +204,46 @@ export default function NuevaVentaPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="treatment">Tratamiento</Label>
-                <Input
+                <select
                   id="treatment"
-                  type="text"
-                  placeholder="Ej: Limpieza Dental"
+                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
                   value={formData.treatment}
-                  onChange={(e) =>
-                    setFormData({ ...formData, treatment: e.target.value })
-                  }
+                  onChange={handleTreatmentChange}
                   required
-                />
+                >
+                  <option value="">Seleccionar tratamiento</option>
+                  {TRATAMIENTOS_DENTALES.map((tratamiento) => (
+                    <option key={tratamiento.nombre} value={tratamiento.nombre}>
+                      {tratamiento.nombre}
+                      {tratamiento.precio > 0 &&
+                        ` - $${tratamiento.precio.toLocaleString("es-CO")}`}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-500">
+                  El precio se autocompleta según el tratamiento seleccionado
+                </p>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="amount">Monto</Label>
-                <Input
-                  id="amount"
-                  type="number"
-                  placeholder="0"
-                  value={formData.amount}
-                  onChange={(e) =>
-                    setFormData({ ...formData, amount: e.target.value })
-                  }
-                  required
-                />
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">
+                    $
+                  </span>
+                  <Input
+                    id="amount"
+                    type="text"
+                    placeholder="0"
+                    value={displayAmount}
+                    onChange={handleAmountChange}
+                    className="pl-7"
+                    required
+                  />
+                </div>
+                <p className="text-xs text-gray-500">
+                  Formato: $500.000 (pesos colombianos)
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -197,9 +273,13 @@ export default function NuevaVentaPage() {
                     setFormData({ ...formData, status: e.target.value })
                   }
                 >
-                  <option value="completada">Completada</option>
-                  <option value="pendiente">Pendiente</option>
+                  <option value="completada">Completada (Pagada y Realizada)</option>
+                  <option value="pendiente">Pendiente (Pago o Tratamiento Pendiente)</option>
                 </select>
+                <p className="text-xs text-gray-500">
+                  <strong>Completada:</strong> Tratamiento realizado y pagado.{" "}
+                  <strong>Pendiente:</strong> Pago a crédito o cita programada
+                </p>
               </div>
             </div>
 
