@@ -73,14 +73,13 @@ const functions = [
 async function get_sales_summary() {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
   const sales = await prisma.sale.findMany({
     where: {
       date: {
         gte: startOfMonth,
-        lte: endOfMonth,
       },
+      status: "completada",
     },
     include: {
       patient: true,
@@ -95,7 +94,7 @@ async function get_sales_summary() {
     total,
     count,
     avgTicket,
-    period: `${startOfMonth.toLocaleDateString("es-CO")} - ${endOfMonth.toLocaleDateString("es-CO")}`,
+    period: `mes actual`,
   };
 }
 
@@ -163,13 +162,11 @@ async function get_accounts_receivable() {
 async function get_expenses_summary() {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
   const expenses = await prisma.expense.findMany({
     where: {
       date: {
         gte: startOfMonth,
-        lte: endOfMonth,
       },
     },
   });
@@ -191,15 +188,14 @@ async function get_expenses_summary() {
 async function get_pyg_summary() {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
   // Ingresos
   const sales = await prisma.sale.findMany({
     where: {
       date: {
         gte: startOfMonth,
-        lte: endOfMonth,
       },
+      status: "completada",
     },
   });
   const revenue = sales.reduce((sum, sale) => sum + sale.amount, 0);
@@ -209,7 +205,6 @@ async function get_pyg_summary() {
     where: {
       date: {
         gte: startOfMonth,
-        lte: endOfMonth,
       },
     },
   });
@@ -220,7 +215,6 @@ async function get_pyg_summary() {
     where: {
       date: {
         gte: startOfMonth,
-        lte: endOfMonth,
       },
     },
   });
@@ -253,6 +247,7 @@ async function get_top_treatments() {
       date: {
         gte: startOfMonth,
       },
+      status: "completada",
     },
   });
 
@@ -310,10 +305,9 @@ export async function POST(request: Request) {
       {
         role: "system",
         content: `Eres un asistente de CR Dental Studio, un consultorio dental en Colombia.
-Ayudas a los administradores a obtener información sobre ventas, inventario, cuentas por cobrar, gastos, P&G y más.
-Siempre respondes en español colombiano, de manera profesional pero amigable.
-Usa formato de moneda colombiano (COP) y fechas en formato colombiano.
-Cuando muestres números grandes, usa puntos como separadores de miles (ej: 15.000.000).`,
+Responde de manera CONCISA y DIRECTA. Máximo 20 palabras por respuesta, a menos que el usuario pida más detalles.
+Usa español colombiano, formato COP y separadores con puntos (ej: 7.480.000).
+Sé profesional pero amigable. Ve directo al punto.`,
       },
       {
         role: "user",
