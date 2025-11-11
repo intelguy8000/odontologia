@@ -52,8 +52,16 @@ const functions = [
     },
   },
   {
+    name: "get_profit",
+    description: "Obtiene la utilidad del mes (ventas menos gastos)",
+    parameters: {
+      type: "object",
+      properties: {},
+    },
+  },
+  {
     name: "get_pyg_summary",
-    description: "Obtiene el estado de pérdidas y ganancias del mes",
+    description: "Obtiene el estado completo de pérdidas y ganancias del mes con márgenes",
     parameters: {
       type: "object",
       properties: {},
@@ -171,6 +179,37 @@ async function get_expenses_summary() {
   };
 }
 
+async function get_profit() {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const [salesResult, expensesResult] = await Promise.all([
+    prisma.sale.aggregate({
+      where: {
+        date: { gte: startOfMonth },
+        status: "completada",
+      },
+      _sum: { amount: true },
+    }),
+    prisma.expense.aggregate({
+      where: {
+        date: { gte: startOfMonth },
+      },
+      _sum: { amount: true },
+    }),
+  ]);
+
+  const revenue = salesResult._sum.amount || 0;
+  const expenses = expensesResult._sum.amount || 0;
+  const profit = revenue - expenses;
+
+  return {
+    profit,
+    revenue,
+    expenses,
+  };
+}
+
 async function get_pyg_summary() {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -205,6 +244,7 @@ async function get_pyg_summary() {
 
   return {
     revenue,
+    directCosts,
     expenses: totalExpenses,
     netProfit,
     grossMargin,
@@ -256,6 +296,8 @@ async function executeFunction(name: string, args: any) {
       return await get_accounts_receivable();
     case "get_expenses_summary":
       return await get_expenses_summary();
+    case "get_profit":
+      return await get_profit();
     case "get_pyg_summary":
       return await get_pyg_summary();
     case "get_top_treatments":
