@@ -63,7 +63,7 @@ export function AIChat() {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 bg-teal-600 hover:bg-teal-700"
         >
           <MessageCircle className="h-6 w-6" />
         </Button>
@@ -112,7 +112,7 @@ export function AIChat() {
                 <div
                   className={`rounded-lg p-3 max-w-[80%] text-sm ${
                     msg.role === "user"
-                      ? "bg-primary text-primary-foreground"
+                      ? "bg-teal-600 text-white"
                       : "bg-muted"
                   }`}
                 >
