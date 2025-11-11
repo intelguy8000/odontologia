@@ -2,6 +2,8 @@
 
 Sistema de gestión integral para el consultorio odontológico CR Dental Studio de Medellín, Colombia.
 
+**Estado**: Desplegado en Vercel con PostgreSQL
+
 ## 🚀 Stack Tecnológico
 
 - **Framework**: Next.js 14 (App Router)
