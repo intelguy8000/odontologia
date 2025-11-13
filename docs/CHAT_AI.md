@@ -34,7 +34,7 @@ El chat puede responder preguntas sobre:
    - Top 10 items por stock
    - Solo campos necesarios (optimizado)
 
-5. **Cuentas por Cobrar** (`get_accounts_receivable`)
+5. **Planes de Pago** (`get_accounts_receivable`)
    - Total por cobrar
    - Planes activos
    - Cuotas vencidas
@@ -320,7 +320,7 @@ get_sales_summary()           // Ventas del mes
 get_profit()                  // Utilidad (ventas - gastos)
 get_expenses_summary()        // Gastos del mes
 get_inventory_status()        // Inventario crítico/bajo
-get_accounts_receivable()     // Cuentas por cobrar
+get_accounts_receivable()     // Planes de pago
 get_pyg_summary()            // P&G completo con márgenes
 get_top_treatments()         // Top 3 tratamientos
 ```

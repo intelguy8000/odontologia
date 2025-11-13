@@ -153,7 +153,7 @@ export default async function DashboardPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Receipt className="h-5 w-5 text-blue-600" />
-                <CardTitle className="text-blue-900">Cuentas por Cobrar</CardTitle>
+                <CardTitle className="text-blue-900">Planes de Pago</CardTitle>
               </div>
               <Link href="/cuentas-por-cobrar">
                 <Button variant="outline" size="sm">

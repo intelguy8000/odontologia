@@ -18,13 +18,13 @@ Sistema de gestión integral para el consultorio odontológico CR Dental Studio 
 
 ### ✅ Módulos Completos
 
-- **Dashboard** - KPIs, gráficos de ventas, alertas de inventario y cuentas por cobrar
+- **Dashboard** - KPIs, gráficos de ventas, alertas de inventario y planes de pago
 - **Ventas** - Gestión de tratamientos, facturación y planes de pago
 - **Inventario** - Control de stock con alertas automáticas
 - **Compras & Gastos** - Registro de compras con actualización automática de inventario
 - **P&G** - Estado de resultados con márgenes y gráficos
 - **Clientes** - Base de datos de pacientes (en progreso)
-- **Cuentas por Cobrar** - Planes de pago con cuotas y seguimiento
+- **Planes de Pago** - Planes de pago con cuotas y seguimiento
 - **Integraciones** - Gestión de conexiones externas (Alegra, OpenAI)
 - **Usuarios** - CRUD de usuarios con sistema de permisos
 - **Chat AI** - Asistente flotante con respuestas contextuales

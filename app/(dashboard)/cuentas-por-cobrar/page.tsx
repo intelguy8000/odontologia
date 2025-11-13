@@ -10,7 +10,7 @@ export default async function CuentasPorCobrarPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Cuentas por Cobrar</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Planes de Pago</h1>
         <p className="text-gray-500 mt-1">
           Gestiona los planes de pago y cuotas pendientes
         </p>
