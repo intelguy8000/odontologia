@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { Search, Plus, Edit2, Trash2, Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
 
 interface Patient {
   id: string;
@@ -22,6 +25,18 @@ export function PatientsTable() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    document: "",
+    fullName: "",
+    birthDate: "",
+    phone: "",
+    email: "",
+    address: "",
+    eps: "",
+    notes: "",
+  });
 
   useEffect(() => {
     fetchPatients();
@@ -40,6 +55,84 @@ export function PatientsTable() {
       setLoading(false);
     }
   }
+
+  const resetForm = () => {
+    setFormData({
+      document: "",
+      fullName: "",
+      birthDate: "",
+      phone: "",
+      email: "",
+      address: "",
+      eps: "",
+      notes: "",
+    });
+    setEditingId(null);
+    setShowForm(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const url = editingId ? `/api/patients/${editingId}` : "/api/patients";
+      const method = editingId ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          birthDate: formData.birthDate || null,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Error al guardar paciente");
+
+      toast.success(editingId ? "Paciente actualizado" : "Paciente creado");
+      resetForm();
+      fetchPatients();
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Error al guardar paciente");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (patient: Patient) => {
+    setFormData({
+      document: patient.document,
+      fullName: patient.fullName,
+      birthDate: patient.birthDate || "",
+      phone: patient.phone,
+      email: patient.email || "",
+      address: patient.address || "",
+      eps: patient.eps || "",
+      notes: patient.notes || "",
+    });
+    setEditingId(patient.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("¿Estás seguro de eliminar este paciente?")) return;
+
+    try {
+      const response = await fetch(`/api/patients/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Error al eliminar paciente");
+
+      toast.success("Paciente eliminado");
+      fetchPatients();
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Error al eliminar paciente");
+    }
+  };
 
   const filteredPatients = patients.filter(
     (patient) =>
@@ -83,11 +176,162 @@ export function PatientsTable() {
             className="pl-10"
           />
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700">
+        <Button
+          className="bg-blue-600 hover:bg-blue-700"
+          onClick={() => setShowForm(!showForm)}
+        >
           <Plus className="w-4 h-4 mr-2" />
           Agregar Cliente
         </Button>
       </div>
+
+      {/* Formulario */}
+      {showForm && (
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {editingId ? "Editar Paciente" : "Nuevo Paciente"}
+            </CardTitle>
+            <CardDescription>
+              {editingId
+                ? "Actualiza la información del paciente"
+                : "Registra un nuevo paciente"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="document">
+                    Documento <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="document"
+                    type="text"
+                    placeholder="Ej: 1020304059"
+                    value={formData.document}
+                    onChange={(e) =>
+                      setFormData({ ...formData, document: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="fullName">
+                    Nombre Completo <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="fullName"
+                    type="text"
+                    placeholder="Ej: María García López"
+                    value={formData.fullName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, fullName: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="birthDate">Fecha de Nacimiento</Label>
+                  <Input
+                    id="birthDate"
+                    type="date"
+                    value={formData.birthDate}
+                    onChange={(e) =>
+                      setFormData({ ...formData, birthDate: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="phone">
+                    Teléfono <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="Ej: 3001234567"
+                    value={formData.phone}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="paciente@email.com"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="eps">EPS</Label>
+                  <Input
+                    id="eps"
+                    type="text"
+                    placeholder="Ej: Sura, Nueva EPS"
+                    value={formData.eps}
+                    onChange={(e) =>
+                      setFormData({ ...formData, eps: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="address">Dirección</Label>
+                <Input
+                  id="address"
+                  type="text"
+                  placeholder="Ej: Calle 123 # 45-67"
+                  value={formData.address}
+                  onChange={(e) =>
+                    setFormData({ ...formData, address: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="notes">Notas</Label>
+                <textarea
+                  id="notes"
+                  placeholder="Observaciones adicionales..."
+                  value={formData.notes}
+                  onChange={(e) =>
+                    setFormData({ ...formData, notes: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md min-h-[80px]"
+                />
+              </div>
+
+              <div className="flex gap-2 justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={resetForm}
+                >
+                  Cancelar
+                </Button>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Guardando..." : editingId ? "Actualizar" : "Guardar"}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Tabla de pacientes */}
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -171,10 +415,16 @@ export function PatientsTable() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex gap-2">
-                        <button className="text-blue-600 hover:text-blue-900">
+                        <button
+                          className="text-blue-600 hover:text-blue-900"
+                          onClick={() => handleEdit(patient)}
+                        >
                           <Edit2 className="w-4 h-4" />
                         </button>
-                        <button className="text-red-600 hover:text-red-900">
+                        <button
+                          className="text-red-600 hover:text-red-900"
+                          onClick={() => handleDelete(patient.id)}
+                        >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
