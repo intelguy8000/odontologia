@@ -3,6 +3,7 @@
 Sistema de gestión integral para el consultorio odontológico CR Dental Studio de Medellín, Colombia.
 
 **Estado**: Desplegado en Vercel con PostgreSQL
+**Última actualización**: Noviembre 2024
 
 ## 🚀 Stack Tecnológico
 
@@ -19,26 +20,33 @@ Sistema de gestión integral para el consultorio odontológico CR Dental Studio 
 ### ✅ Módulos Completos
 
 - **Dashboard** - KPIs, gráficos de ventas, alertas de inventario y planes de pago
-- **Ventas** - Gestión de tratamientos, facturación y planes de pago
+- **Ventas** - Gestión de tratamientos, facturación y planes de pago con distinción Alegra/Manual
 - **Inventario** - Control de stock con alertas automáticas
-- **Compras & Gastos** - Registro de compras con actualización automática de inventario
+- **Compras & Gastos** - Registro de compras y gastos con formularios completos y categorías personalizables
+- **Proveedores** - CRUD completo de proveedores con integración en formulario de compras
 - **P&G** - Estado de resultados con márgenes y gráficos
-- **Clientes** - Base de datos de pacientes (en progreso)
+- **Clientes** - Base de datos de pacientes con CRUD completo y campo de género
 - **Planes de Pago** - Planes de pago con cuotas y seguimiento
-- **Integraciones** - Gestión de conexiones externas (Alegra, OpenAI)
+- **Integraciones** - Gestión de conexiones externas con sincronización Alegra automática
 - **Usuarios** - CRUD de usuarios con sistema de permisos
 - **Chat AI** - Asistente flotante con respuestas contextuales
 
 ### 🎯 Funcionalidades
 
-- Sistema de autenticación con 3 roles (admin, asistente, readonly)
-- Planes de pago flexibles (mensual, quincenal, semanal)
-- Importación de facturas desde Alegra (mock)
-- Cálculo automático de costos directos e indirectos
-- Alertas de inventario bajo y crítico
-- Dashboard con métricas en tiempo real
-- Sistema de transacciones para integridad de datos
-- Logs de auditoría para integraciones
+- **Autenticación simplificada** - Auto-login como Dra. Catalina (admin) sin necesidad de credenciales
+- **Distinción de ventas** - Sistema de filtrado entre ventas de Alegra y ventas manuales (efectivo/informal)
+- **Indicador de sincronización** - Muestra última sincronización con Alegra ("hace 20 minutos")
+- **Gestión de proveedores** - Sección dedicada con CRUD completo
+- **Formularios de entrada** - Compras y gastos con formularios completos de captura
+- **Categorías personalizables** - Campo "Otros" con input personalizado en compras y gastos
+- **Botones de creación rápida** - "+ Nuevo Proveedor" y "+ Nuevo Paciente" en formularios
+- **Planes de pago flexibles** - Mensual, quincenal, semanal con cuotas variables
+- **Cálculo automático** - Costos directos e indirectos, márgenes y totales
+- **Alertas de inventario** - Notificaciones de stock bajo y crítico
+- **Dashboard en tiempo real** - KPIs actualizados con métricas del mes
+- **Registro de pacientes completo** - Incluye género, edad, EPS, contacto y notas
+- **Sistema de transacciones** - Integridad de datos en operaciones críticas
+- **Logs de auditoría** - Seguimiento de cambios en integraciones
 
 ## 🛠️ Setup del Proyecto
 
@@ -84,19 +92,15 @@ Sistema de gestión integral para el consultorio odontológico CR Dental Studio 
 
    Navega a [http://localhost:3000](http://localhost:3000)
 
-## 🔑 Credenciales de Acceso
+## 🔑 Acceso al Sistema
 
-### Administrador
+El sistema cuenta con **auto-login simplificado**. Al acceder a la aplicación, automáticamente inicias sesión como:
+
+- **Usuario**: Dra. Catalina Rodríguez
+- **Rol**: Administrador
 - **Email**: dra.catalina@crdentalstudio.com
-- **Password**: Admin123!
 
-### Asistente
-- **Email**: maria@crdentalstudio.com
-- **Password**: Asistente123!
-
-### Solo Lectura
-- **Email**: juan@crdentalstudio.com
-- **Password**: Lectura123!
+No se requieren credenciales. El sistema redirige automáticamente al dashboard.
 
 ## 📁 Estructura del Proyecto
 
@@ -127,11 +131,27 @@ cr-dental-studio/
 ### User
 - id, email, password, name, role, status, createdAt, updatedAt
 
+### Patient (Clientes)
+- id, document, fullName, **gender (M/F)**, birthDate, phone, email, address, eps, notes
+
+### Supplier (Proveedores)
+- id, name, phone, email, createdAt, updatedAt
+
+### Sale (Ventas)
+- id, date, patientId, treatment, amount, paymentMethod, status, **source (alegra/manual)**, **alegraInvoiceId**
+
+### Purchase (Compras)
+- id, date, supplierId, invoiceNumber, category (personalizable con "Otros"), totalAmount, items[]
+
+### Expense (Gastos)
+- id, date, category (personalizable con "Otros"), description, amount, frequency, status
+
 ### Config
 - Información del consultorio (singleton)
 
 ### Integration
 - Integraciones con servicios externos (Alegra, OpenAI)
+- Incluye lastSync para tracking de sincronizaciones
 
 ## 🔐 Roles y Permisos
 
@@ -159,12 +179,23 @@ Para desplegar este proyecto en Vercel con PostgreSQL, sigue la guía detallada 
 3. Crear DB: `vercel postgres create`
 4. Deploy: `vercel --prod`
 
-## 📝 Próximos Pasos (Opcionales)
+## 📝 Estado de Desarrollo
 
-- [ ] Completar módulo de Clientes con detalle
+### ✅ Completado (Noviembre 2024)
+- [x] Módulo de Clientes completo con CRUD y campo de género
+- [x] Módulo de Proveedores con CRUD completo
+- [x] Formularios de Compras y Gastos con entrada manual
+- [x] Distinción entre ventas de Alegra y ventas manuales
+- [x] Indicador de última sincronización con Alegra
+- [x] Categorías personalizables con campo "Otros"
+- [x] Botones de creación rápida en formularios
+- [x] Auto-login simplificado
+
+### 🔜 Próximos Pasos (Opcionales)
 - [ ] Módulo de Agenda y Citas
-- [ ] Integración real con Alegra API
+- [ ] Integración real con Alegra API (actualmente mock)
 - [ ] Integración real con OpenAI API para chat
+- [ ] Historia clínica por paciente
 - [ ] Reportes PDF exportables
 - [ ] Envío de recordatorios por email/SMS
 - [ ] App móvil (React Native)
