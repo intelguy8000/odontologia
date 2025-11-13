@@ -1,13 +1,25 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Download } from "lucide-react";
+import { Plus, Clock } from "lucide-react";
 import { getSales } from "@/lib/services/ventas.service";
 import { SalesTable } from "@/components/ventas/sales-table";
-import { ImportAlegraButton } from "@/components/ventas/import-alegra-button";
+import { PrismaClient } from "@prisma/client";
+import { formatDistanceToNow } from "date-fns";
+import { es } from "date-fns/locale/es";
+
+const prisma = new PrismaClient();
+
+async function getAlegraLastSync() {
+  const alegraIntegration = await prisma.integration.findFirst({
+    where: { type: "alegra" },
+  });
+  return alegraIntegration;
+}
 
 export default async function VentasPage() {
   const sales = await getSales();
+  const alegraIntegration = await getAlegraLastSync();
 
   const totalAmount = sales.reduce((sum, sale) => {
     if (sale.status === "completada") {
@@ -27,8 +39,19 @@ export default async function VentasPage() {
             Gestiona todas las ventas y tratamientos realizados
           </p>
         </div>
-        <div className="flex gap-2">
-          <ImportAlegraButton />
+        <div className="flex items-center gap-4">
+          {alegraIntegration?.lastSync && (
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Clock className="h-4 w-4" />
+              <span>
+                Última sincronización con Alegra:{" "}
+                {formatDistanceToNow(new Date(alegraIntegration.lastSync), {
+                  addSuffix: true,
+                  locale: es,
+                })}
+              </span>
+            </div>
+          )}
           <Link href="/ventas/nueva">
             <Button>
               <Plus className="mr-2 h-4 w-4" />
