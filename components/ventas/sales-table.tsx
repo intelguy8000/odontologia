@@ -151,9 +151,9 @@ export function SalesTable({ sales }: SalesTableProps) {
   return (
     <div className="space-y-4">
       {/* Filtros y Export Buttons */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         {/* Filtro de Origen */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button
             onClick={() => setSourceFilter("todas")}
             variant={sourceFilter === "todas" ? "default" : "outline"}
@@ -178,20 +178,22 @@ export function SalesTable({ sales }: SalesTableProps) {
         </div>
 
         {/* Export Buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button onClick={exportToCSV} variant="outline" size="sm">
             <Download className="mr-2 h-4 w-4" />
-            Exportar CSV
+            <span className="hidden sm:inline">Exportar </span>CSV
           </Button>
           <Button onClick={exportToExcel} variant="outline" size="sm">
             <FileSpreadsheet className="mr-2 h-4 w-4" />
-            Exportar Excel
+            <span className="hidden sm:inline">Exportar </span>Excel
           </Button>
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      <div className="overflow-x-auto -mx-4 sm:mx-0">
+        <div className="inline-block min-w-full align-middle">
+          <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+            <table className="min-w-full divide-y divide-gray-300">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
               <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
@@ -300,10 +302,12 @@ export function SalesTable({ sales }: SalesTableProps) {
           </tbody>
         </table>
         {filteredSales.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-gray-500 bg-white">
             {sales.length === 0 ? "No hay ventas registradas" : "No se encontraron resultados con los filtros aplicados"}
           </div>
         )}
+          </div>
+        </div>
       </div>
     </div>
   );

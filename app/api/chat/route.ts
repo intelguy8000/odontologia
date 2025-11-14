@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { prisma } from "@/lib/prisma";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Marcar ruta como dinámica para que no se evalúe durante build
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 // Funciones disponibles para el asistente
 const functions = [
@@ -314,6 +314,11 @@ export async function POST(request: Request) {
     if (!message || message.trim() === "") {
       return NextResponse.json({ error: "Mensaje vacío" }, { status: 400 });
     }
+
+    // Inicializar OpenAI dentro de la función (lazy initialization)
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     // Crear chat con OpenAI
     const messages: any[] = [

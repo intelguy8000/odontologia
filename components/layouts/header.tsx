@@ -44,18 +44,18 @@ export function Header({ user }: HeaderProps) {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4">
+    <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-gray-800">Bienvenido</h2>
-          <p className="text-sm text-gray-500">
+        <div className="ml-12 lg:ml-0">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Bienvenido</h2>
+          <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
             Gestiona tu consultorio de manera eficiente
           </p>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger className="focus:outline-none">
-            <div className="flex items-center gap-3 hover:bg-gray-50 rounded-lg p-2 transition-colors">
-              <div className="text-right">
+            <div className="flex items-center gap-2 sm:gap-3 hover:bg-gray-50 rounded-lg p-2 transition-colors">
+              <div className="text-right hidden sm:block">
                 <p className="text-sm font-medium text-gray-900">{user.name}</p>
                 <p className="text-xs text-gray-500">{getRoleName(user.role)}</p>
               </div>

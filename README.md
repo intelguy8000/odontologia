@@ -1,204 +1,299 @@
-# CR Dental Studio - Sistema de Gestión
+# CR Dental Studio - Sistema de Gestión Odontológica
 
-Sistema de gestión integral para el consultorio odontológico CR Dental Studio de Medellín, Colombia.
+Sistema integral de gestión para consultorio odontológico especializado en Diseños de Sonrisa.
 
-**Estado**: Desplegado en Vercel con PostgreSQL
-**Última actualización**: Noviembre 2024
+![Estado](https://img.shields.io/badge/Estado-Producción-success)
+![Next.js](https://img.shields.io/badge/Next.js-16-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 
-## 🚀 Stack Tecnológico
+🌐 **Producción:** https://odontologia-loop.vercel.app
+📦 **Repo:** https://github.com/intelguy8000/odontologia
 
-- **Framework**: Next.js 14 (App Router)
-- **Lenguaje**: TypeScript
-- **Estilos**: Tailwind CSS
-- **UI Components**: shadcn/ui
-- **Base de Datos**: PostgreSQL (Vercel Postgres) con Prisma ORM
-- **Autenticación**: NextAuth.js v5
-- **Formularios**: React Hook Form + Zod
+---
 
-## 📋 Características
+## 📋 Descripción
 
-### ✅ Módulos Completos
+Sistema web para **CR Dental Studio** (Medellín, Colombia) que permite a la Dra. Catalina Rodríguez gestionar:
 
-- **Dashboard** - KPIs, gráficos de ventas, alertas de inventario y planes de pago
-- **Ventas** - Gestión de tratamientos, facturación y planes de pago con distinción Alegra/Manual
-- **Inventario** - Control de stock con alertas automáticas
-- **Compras & Gastos** - Registro de compras y gastos con formularios completos y categorías personalizables
-- **Proveedores** - CRUD completo de proveedores con integración en formulario de compras
-- **P&G** - Estado de resultados con márgenes y gráficos
-- **Clientes** - Base de datos de pacientes con CRUD completo y campo de género
-- **Planes de Pago** - Planes de pago con cuotas y seguimiento
-- **Integraciones** - Gestión de conexiones externas con sincronización Alegra automática
-- **Usuarios** - CRUD de usuarios con sistema de permisos
-- **Chat AI** - Asistente flotante con respuestas contextuales
+- 💰 **Ventas** por tratamiento (con distinción Alegra/Manual)
+- 👥 **Clientes/Pacientes** con historial completo
+- 📦 **Inventario** con alertas automáticas
+- 🛒 **Compras** a proveedores con items dinámicos
+- 💸 **Gastos** operacionales categorizados
+- 📊 **P&G** (Estado de resultados) automático
+- 💳 **Planes de Pago** con cuotas y seguimiento
+- 🤖 **Chat AI** experto en el negocio
 
-### 🎯 Funcionalidades
+---
 
-- **Autenticación simplificada** - Auto-login como Dra. Catalina (admin) sin necesidad de credenciales
-- **Distinción de ventas** - Sistema de filtrado entre ventas de Alegra y ventas manuales (efectivo/informal)
-- **Indicador de sincronización** - Muestra última sincronización con Alegra ("hace 20 minutos")
-- **Gestión de proveedores** - Sección dedicada con CRUD completo
-- **Formularios de entrada** - Compras y gastos con formularios completos de captura
-- **Categorías personalizables** - Campo "Otros" con input personalizado en compras y gastos
-- **Botones de creación rápida** - "+ Nuevo Proveedor" y "+ Nuevo Paciente" en formularios
-- **Planes de pago flexibles** - Mensual, quincenal, semanal con cuotas variables
-- **Cálculo automático** - Costos directos e indirectos, márgenes y totales
-- **Alertas de inventario** - Notificaciones de stock bajo y crítico
-- **Dashboard en tiempo real** - KPIs actualizados con métricas del mes
-- **Registro de pacientes completo** - Incluye género, edad, EPS, contacto y notas
-- **Sistema de transacciones** - Integridad de datos en operaciones críticas
-- **Logs de auditoría** - Seguimiento de cambios en integraciones
+## 🚀 Tech Stack
 
-## 🛠️ Setup del Proyecto
+### Frontend
+- **Next.js 16** (App Router + Turbopack)
+- **TypeScript** (strict mode)
+- **Tailwind CSS** para estilos
+- **shadcn/ui** componentes base
+- **Recharts** para gráficos
+- **Sonner** para notificaciones
 
-### Prerrequisitos
+### Backend
+- **Next.js API Routes**
+- **Prisma ORM 6.19**
+- **PostgreSQL** (Vercel Postgres)
 
-- Node.js 18+ y npm
+### Deployment
+- **Vercel** (CI/CD automático desde GitHub)
+- **Auto-deploy** en push a main
 
-### Instalación
+---
 
-1. **Clonar el repositorio**
-   ```bash
-   git clone https://github.com/intelguy8000/odontologia.git
-   cd cr-dental-studio
-   ```
-
-2. **Instalar dependencias**
-   ```bash
-   npm install
-   ```
-
-3. **Configurar variables de entorno**
-
-   El archivo `.env` ya está creado con:
-   ```env
-   DATABASE_URL="file:./dev.db"
-   NEXTAUTH_SECRET="cambiar-en-produccion"
-   NEXTAUTH_URL="http://localhost:3000"
-   ```
-
-4. **Generar base de datos y ejecutar seed**
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   npm run seed
-   ```
-
-5. **Iniciar servidor de desarrollo**
-   ```bash
-   npm run dev
-   ```
-
-6. **Abrir en navegador**
-
-   Navega a [http://localhost:3000](http://localhost:3000)
-
-## 🔑 Acceso al Sistema
-
-El sistema cuenta con **auto-login simplificado**. Al acceder a la aplicación, automáticamente inicias sesión como:
-
-- **Usuario**: Dra. Catalina Rodríguez
-- **Rol**: Administrador
-- **Email**: dra.catalina@crdentalstudio.com
-
-No se requieren credenciales. El sistema redirige automáticamente al dashboard.
-
-## 📁 Estructura del Proyecto
-
+## 📁 Arquitectura
 ```
 cr-dental-studio/
-├── app/                        # App Router de Next.js
-│   ├── (dashboard)/           # Rutas protegidas del dashboard
-│   │   ├── layout.tsx         # Layout con Sidebar y Header
-│   │   └── dashboard/         # Página principal del dashboard
-│   ├── api/                   # API routes
-│   │   └── auth/              # NextAuth routes
-│   └── login/                 # Página de login
-├── components/                # Componentes reutilizables
-│   ├── layouts/              # Layouts (Sidebar, Header)
-│   └── ui/                   # Componentes de shadcn/ui
-├── lib/                       # Utilidades y configuraciones
-│   └── auth.ts               # Configuración de NextAuth
-├── prisma/                    # Schema y seed de Prisma
-│   ├── schema.prisma         # Modelos de base de datos
-│   └── seed.ts               # Datos iniciales
-├── types/                     # Definiciones de tipos TypeScript
-│   └── next-auth.d.ts        # Tipos extendidos de NextAuth
-└── middleware.ts             # Middleware de protección de rutas
+├── app/
+│   ├── (dashboard)/        # Rutas protegidas
+│   │   ├── dashboard/     # KPIs y resumen
+│   │   ├── ventas/        # Gestión de ventas
+│   │   ├── clientes/      # CRUD de pacientes
+│   │   ├── compras/       # Compras a proveedores
+│   │   ├── proveedores/   # CRUD de proveedores
+│   │   ├── inventario/    # Control de stock
+│   │   ├── cuentas-por-cobrar/  # Planes de pago
+│   │   ├── pyg/           # Estado de resultados
+│   │   └── configuracion/ # Settings
+│   ├── api/               # REST endpoints
+│   └── login/             # Auto-login (redirige)
+├── components/
+│   ├── ui/                # shadcn components
+│   ├── chat/              # Chat AI
+│   └── layouts/           # Sidebar, Header
+├── lib/
+│   ├── prisma.ts          # DB client
+│   ├── auth.ts            # Auto-login config
+│   └── services/          # Business logic
+├── prisma/
+│   ├── schema.prisma      # DB models
+│   └── seed.ts            # Data inicial
+├── claude.md              # Guía para Claude Code
+└── CHANGELOG.md           # Historia de cambios
 ```
 
-## 🗄️ Modelos de Base de Datos
+---
 
-### User
-- id, email, password, name, role, status, createdAt, updatedAt
+## 🔑 Decisiones de Diseño
 
-### Patient (Clientes)
-- id, document, fullName, **gender (M/F)**, birthDate, phone, email, address, eps, notes
+### 1. Auto-Login
+**Decisión:** Sistema sin autenticación tradicional
+**Razón:** Uso personal de una sola usuaria (Dra. Catalina)
+**Implementación:** Usuario siempre logueado como admin
 
-### Supplier (Proveedores)
-- id, name, phone, email, createdAt, updatedAt
+### 2. Source en Ventas
+**Decisión:** Campo `source` diferencia ventas Alegra vs Manual
+**Razón:** Ventas con efectivo son informales (amigos/familia), resto son formales (facturadas)
+**Impacto:** Reportes tributarios más precisos
+
+### 3. Secciones Dedicadas
+**Decisión:** Proveedores y Clientes tienen rutas propias (no modales)
+**Razón:** Preparación para escalabilidad futura
+**Filosofía:** "Esto luego crecerá"
+
+### 4. PostgreSQL en Producción
+**Decisión:** NO usar DB local en desarrollo
+**Razón:** Vercel maneja migraciones automáticamente
+**Workflow:** Push a GitHub → Vercel migra y despliega
+
+### 5. Chat AI con Respuestas Cortas
+**Decisión:** Máximo 18-20 palabras por defecto
+**Razón:** Respuestas directas y accionables
+**Filosofía:** "No modo profesor, solo datos"
+
+---
+
+## 🗄️ Modelos de Datos Principales
+
+### Patient (Pacientes)
+```prisma
+{
+  id, document (unique), fullName, gender, birthDate,
+  phone, email, address, eps, notes,
+  sales[], paymentPlans[]
+}
+```
 
 ### Sale (Ventas)
-- id, date, patientId, treatment, amount, paymentMethod, status, **source (alegra/manual)**, **alegraInvoiceId**
-
-### Purchase (Compras)
-- id, date, supplierId, invoiceNumber, category (personalizable con "Otros"), totalAmount, items[]
-
-### Expense (Gastos)
-- id, date, category (personalizable con "Otros"), description, amount, frequency, status
-
-### Config
-- Información del consultorio (singleton)
-
-### Integration
-- Integraciones con servicios externos (Alegra, OpenAI)
-- Incluye lastSync para tracking de sincronizaciones
-
-## 🔐 Roles y Permisos
-
-- **admin**: Acceso completo a todos los módulos
-- **asistente**: Acceso a operaciones del día a día
-- **readonly**: Solo lectura, sin permisos de edición
-
-## 🧪 Scripts Disponibles
-
-```bash
-npm run dev      # Iniciar servidor de desarrollo
-npm run build    # Construir para producción
-npm run start    # Iniciar servidor de producción
-npm run lint     # Ejecutar linter
-npm run seed     # Ejecutar seed de base de datos
+```prisma
+{
+  date, patientId, treatment, amount,
+  paymentMethod, status,
+  source,          // "manual" o "alegra"
+  alegraInvoiceId  // ID factura Alegra (si aplica)
+}
 ```
 
-## 🚀 Despliegue en Vercel
+**Lógica de source:**
+- Método efectivo → `source: "manual"`
+- Método tarjeta/transferencia/nequi → `source: "alegra"`
 
-Para desplegar este proyecto en Vercel con PostgreSQL, sigue la guía detallada en **[DEPLOY.md](./DEPLOY.md)**
+### Purchase (Compras)
+```prisma
+{
+  date, supplierId, invoiceNumber,
+  category, totalAmount,
+  items[]  // Tabla dinámica de productos
+}
+```
 
-**Pasos rápidos:**
-1. Instalar Vercel CLI: `npm i -g vercel`
-2. Login: `vercel login`
-3. Crear DB: `vercel postgres create`
-4. Deploy: `vercel --prod`
+### PaymentPlan (Planes de Pago)
+```prisma
+{
+  patientId, treatment, totalAmount,
+  downPayment, numberOfFees, feeAmount,
+  frequency, startDate, status,
+  fees[]  // Cuotas generadas automáticamente
+}
+```
 
-## 📝 Estado de Desarrollo
+---
 
-### ✅ Completado (Noviembre 2024)
-- [x] Módulo de Clientes completo con CRUD y campo de género
-- [x] Módulo de Proveedores con CRUD completo
-- [x] Formularios de Compras y Gastos con entrada manual
-- [x] Distinción entre ventas de Alegra y ventas manuales
-- [x] Indicador de última sincronización con Alegra
-- [x] Categorías personalizables con campo "Otros"
-- [x] Botones de creación rápida en formularios
-- [x] Auto-login simplificado
+## ⚙️ Setup Local (Opcional)
 
-### 🔜 Próximos Pasos (Opcionales)
-- [ ] Módulo de Agenda y Citas
-- [ ] Integración real con Alegra API (actualmente mock)
-- [ ] Integración real con OpenAI API para chat
-- [ ] Historia clínica por paciente
-- [ ] Reportes PDF exportables
-- [ ] Envío de recordatorios por email/SMS
-- [ ] App móvil (React Native)
+> **Nota:** Este proyecto está configurado para producción en Vercel.
+> No es necesario setup local para contribuir (push directo a GitHub).
+
+Si deseas correr localmente:
+```bash
+# Clonar repo
+git clone https://github.com/intelguy8000/odontologia.git
+cd odontologia
+
+# Instalar dependencias
+npm install
+
+# Variables de entorno (.env)
+DATABASE_URL="postgresql://..." # Usar tu propia DB o Vercel Postgres
+
+# Sincronizar schema
+npx prisma generate
+npx prisma db push
+
+# Seed data (opcional)
+npx prisma db seed
+
+# Desarrollo
+npm run dev
+```
+
+Abre http://localhost:3000
+
+---
+
+## 🚀 Deploy
+
+### Automático (Recomendado)
+1. Push a `main` branch
+2. Vercel detecta cambios
+3. Ejecuta build y migraciones
+4. Deploy automático
+
+### Manual (Vercel CLI)
+```bash
+vercel --prod
+```
+
+---
+
+## 🤖 Chat AI - Agente Experto
+
+El sistema incluye un asistente AI con conocimiento completo del negocio.
+
+**Capacidades:**
+- Consultar ventas, inventario, cuentas por cobrar en lenguaje natural
+- Calcular métricas y tendencias
+- Detectar alertas (inventario bajo, cuotas vencidas)
+- Respuestas ultra-cortas (18-20 palabras) verificadas en DB
+
+**Ejemplos:**
+```
+Usuario: "¿ventas del mes?"
+Bot: "Ventas: $15M en 45 transacciones."
+
+Usuario: "¿inventario crítico?"
+Bot: "3 productos críticos: Guantes L, Resina A3, Lidocaína."
+```
+
+---
+
+## 📊 Funcionalidades Principales
+
+### Dashboard
+- KPIs en tiempo real (ventas, gastos, utilidad, cobros)
+- Gráficos de tendencias
+- Alertas de inventario bajo
+
+### Ventas
+- Registro manual de ventas
+- Importación desde Alegra (próximamente)
+- Filtros por fecha, paciente, método de pago
+- Distinción ventas formales vs informales
+
+### Clientes
+- CRUD completo inline (sin modales)
+- Historial de tratamientos
+- Gestión de planes de pago
+
+### Inventario
+- Control de stock en tiempo real
+- Alertas automáticas (crítico/bajo)
+- Export a Excel
+
+### Compras
+- Registro con items dinámicos
+- Vinculación a proveedores
+- Categorías personalizables
+
+### P&G
+- Estado de resultados automático
+- Cálculo de márgenes
+- Comparativas por período
+
+---
+
+## 🛠️ Comandos Útiles
+```bash
+# Desarrollo
+npm run dev              # Servidor desarrollo
+npm run build            # Build producción
+npm run lint             # Linter
+
+# Base de datos
+npx prisma studio        # UI para ver datos
+npx prisma generate      # Regenerar cliente
+npx prisma db push       # Sincronizar schema (no local)
+
+# Deploy
+git push origin main     # Auto-deploy Vercel
+```
+
+---
+
+## 📝 Contribuir
+
+1. Revisar `claude.md` para guía técnica
+2. Revisar `CHANGELOG.md` para cambios recientes
+3. Hacer cambios en branch
+4. Commit con formato: `tipo: descripción`
+5. Push a GitHub (Vercel despliega automáticamente)
+
+---
+
+## 👥 Créditos
+
+**Desarrollador:** Juan Andrés
+**Cliente:** Dra. Catalina Rodríguez - CR Dental Studio
+**Ubicación:** Medellín, Colombia
+**Asistente AI:** Claude (Anthropic) + Claude Code
+
+---
 
 ## 📄 Licencia
 
@@ -206,4 +301,5 @@ Proyecto privado para CR Dental Studio.
 
 ---
 
-**Desarrollado para**: Dra. Catalina Rodríguez - CR Dental Studio, Medellín
+**Última actualización:** Noviembre 2024
+**Versión:** 1.0 (Producción estable)
